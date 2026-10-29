@@ -1,0 +1,34 @@
+name: API Tests
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        - name: Set up Python 3.11
+          uses: actions/setup-python@v5
+          with:
+            python-version: "3.11"
+        - name: Install dependencies
+          run: pip install -r requirements.txt
+        - name: Run API tests
+          run: |
+            pytest pytest -v  
+  newman:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        - name: Install Newman
+          run: npm install -g newman
+        - name: Run Postman collection
+          run: newman run postman/Restful-booker.postman_collection.json --env-var "base_url=https://restful-booker.herokuapp.com" --folder "Happy path" --folder "Negative cases"
+        - name: Run data-driven tests  
+          run: newman run postman/Restful-booker.postman_collection.json --env-var "base_url=https://restful-booker.herokuapp.com" -d postman/missing_ids.csv --folder "Data-driven"

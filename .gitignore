@@ -1,0 +1,5 @@
+__pycache__/
+.pytest_cache/
+.deepeval/
+.env
+node_modules/
